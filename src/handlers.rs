@@ -259,8 +259,8 @@ impl LanguageServer for Backend {
             None => return Ok(None),
         };
 
-        let hover_text = hover_for_annotation(&text, offset)
-            .or_else(|| hover_from_import(&text, offset));
+        let hover_text =
+            hover_for_annotation(&text, offset).or_else(|| hover_from_import(&text, offset));
 
         let Some(value) = hover_text else {
             return Ok(None);

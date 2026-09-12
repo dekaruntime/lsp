@@ -659,5 +659,3 @@ pub(crate) fn should_skip_dir(path: &Path) -> bool {
         || name == "build"
         || name == "vendor"
 }
-
-

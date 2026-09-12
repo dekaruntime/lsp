@@ -201,10 +201,6 @@ mod tests {
     #[test]
     fn range_after_non_ascii_uses_utf16() {
         let range = source_range("const label = 'é'; const = ;\n", 1, 26, 1);
-        assert_eq!(
-            range.start.character + 1,
-            range.end.character,
-            "{range:?}"
-        );
+        assert_eq!(range.start.character + 1, range.end.character, "{range:?}");
     }
 }

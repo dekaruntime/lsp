@@ -1,37 +1,34 @@
-# DekaScript LSP
+# deka-lsp
 
-The DekaScript language server is launched with `deka lsp --stdio`. Its public
-language identifier is `dekascript`, and it discovers, resolves, indexes, and
-renames `.ds` files only.
+`deka-lsp` is the deka language server: an LSP-over-HTTP server for the deka
+language (`.ds` sources, public language id `dekascript`). It discovers,
+resolves, indexes, renames, and reports diagnostics for `.ds` files only.
+
+Compiler diagnostics delegate to `dsc lsp` — the crate itself never compiles
+source; type checking is owned by the dsc compiler, and this crate consumes
+its diagnostic output.
+
+The server is consumed by the deka CLI (`deka lsp`), which launches it and
+routes editor traffic to it.
+
+## Versioning
+
+`deka-lsp` is published to crates.io and versions independently of the deka
+monorepo. It follows semver on its own release cadence — it does **not** move
+in lockstep with deka's workspace versions. Compatibility with deka/dsc is
+expressed through versioned crate dependencies, not shared version numbers.
 
 ## Build and run
 
 ```sh
-cargo build --release -p dekascript_lsp
-cargo run --release -p dekascript_lsp
+cargo build --release
+cargo test --locked
+cargo clippy --locked
 ```
 
-## Browser diagnostics artifact
+The native server entry point is `deka_lsp::run_stdio` (enabled by the
+default `native` feature), launched by the deka CLI with `deka lsp --stdio`.
 
-`scripts/build-deka-compiler-wasm.sh` emits the companion
-`deka_diagnostics.wasm` artifact with its SHA-256 and metadata. Its stable ABI
-is `deka_diagnostics_alloc`, `deka_diagnostics_analyze`,
-`deka_diagnostics_free`, and `deka_diagnostics_metadata` (ABI version 1).
-`deka_diagnostics_analyze` accepts UTF-8 source text and a UTF-8 URI/path and
-returns JSON diagnostics with UTF-16 ranges. Only `.ds` contexts are accepted.
+## License
 
-## Editor integration
-
-Configure the editor to start the release `cli` binary with `lsp --stdio`, use
-the `dekascript` language id, and associate the server only with `.ds` files.
-The server accepts an optional initialization setting:
-
-```json
-{
-  "dekascript": { "target": "server" }
-}
-```
-
-`DEKA_MODULE_ROOT` can override the project root used for `php_modules`
-resolution. Workspace roots come from `workspaceFolders` or `rootUri`, falling
-back to the current directory.
+Apache-2.0. See [LICENSE](LICENSE).
